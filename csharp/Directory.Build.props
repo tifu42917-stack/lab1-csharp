@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <RollForward>Major</RollForward>
+    <UseAppHost>false</UseAppHost>
+  </PropertyGroup>
+</Project>
