@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 
 namespace Vehicles;
@@ -42,9 +43,7 @@ public class Vehicle
     public decimal Price
     {
         get => _price;
-        set => _price = value > 0
-            ? value
-            : throw new ArgumentOutOfRangeException(nameof(value), value, "Цена должна быть больше нуля");
+        set => _price = RequirePositive(value, "Цена должна быть больше нуля");
     }
 
     public virtual string Kind => "Транспортное средство";
@@ -59,7 +58,7 @@ public class Vehicle
         return sb.ToString();
     }
 
-    public override string ToString() => GetDescription();
+    public sealed override string ToString() => GetDescription();
 
     protected static string RequireText(string? value, string errorMessage)
     {
@@ -70,9 +69,10 @@ public class Vehicle
         return value.Trim();
     }
 
-    protected static double RequirePositive(double value, string errorMessage)
+    protected static T RequirePositive<T>(T value, string errorMessage)
+        where T : INumber<T>
     {
-        if (value <= 0 || double.IsNaN(value) || double.IsInfinity(value))
+        if (!T.IsFinite(value) || value <= T.Zero)
         {
             throw new ArgumentOutOfRangeException(nameof(value), value, errorMessage);
         }
